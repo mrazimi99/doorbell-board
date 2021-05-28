@@ -2,9 +2,8 @@ import os
 import serial
 arduino = serial.Serial('COM2', 115200)
 while True:
-    data = arduino.readline() #the last bit gets rid of the new-line chars
+    data = arduino.readline() # The last bit gets rid of the new-line chars
     if data:
-        print(data)
         strdata = str(data.decode("utf-8")[:-2])
         if strdata == "startcapture":
             print("starting to capture ... ")

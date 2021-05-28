@@ -5,7 +5,7 @@
 #define capture A0
 
 const int ledPin = 13; // Built in LED in Arduino board
-String msg,cmd;
+String msg, pic;
 SoftwareSerial lcdSerial(9, 10);
 SoftwareSerial comSerial(12, 11);
 
@@ -18,6 +18,7 @@ void setup() {
     ; // wait for serial port to connect. Needed for Native USB only
   }
   msg = "";
+  pic = "";
 
   lcdSerial.begin(115200);
   comSerial.begin(115200);
@@ -28,11 +29,14 @@ void loop() {
   int isCaptureEn = digitalRead(capture);
 
   if(isCaptureEn == HIGH) {
-
     lcdSerial.println("start capture ...");
     comSerial.println("startcapture");
     lcdSerial.println("capture done ...");
   }
+
+//  if (comSerial.available() > 0){ // Check if there is data coming from camera
+//    pic = comSerial.readString(); // Read the message as String
+//  }
 
   // To read message received from other Bluetooth Device
   if (Serial.available() > 0){ // Check if there is data coming
