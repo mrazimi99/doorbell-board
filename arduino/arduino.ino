@@ -6,9 +6,12 @@
 
 const int ledPin = 13; // Built in LED in Arduino board
 String msg, pic;
+int bluetooth = 0;
+bool bluetoothSent = false;
+bool wifiSent = false;
 SoftwareSerial vSerial(9, 10);
 SoftwareSerial comSerial(12, 11);
-
+SoftwareSerial wifiSerial(3, 2);
 void setup() {
   // Initialization
   pinMode(ledPin, OUTPUT);
@@ -22,6 +25,7 @@ void setup() {
 
   vSerial.begin(115200);
   comSerial.begin(115200);
+  wifiSerial.begin(115200);
   pinMode(capture, INPUT);
 }
 
@@ -32,26 +36,50 @@ void loop() {
     vSerial.println("start capture ...");
     comSerial.println("startcapture");
     vSerial.println("capture done ...");
-    Serial.println("someone is here !\n" );
-    delay(4000);
-    if(Serial.available() > 0){
-      String newMsg = Serial.readString();
-      vSerial.println(newMsg); 
-    }
+    Serial.println("someone is here !" );
+    bluetoothSent = true;
+    //delay(4000);
+//    if(Serial.available() > 0){
+//      String newMsg = Serial.readString();
+//      vSerial.println(newMsg); 
+//    }
+    //else{
+      //wifiSerial.print("someone is here!");
+    //}
+     
   }
 
-  else{
-      // To read message received from other Bluetooth Device
-  if (Serial.available() > 0){ // Check if there is data coming
-    msg = Serial.readString();
-    // Read the message as String
-    vSerial.println("Android Command: " + msg);
+  else if(wifiSent == false && bluetoothSent == true){
+    // To read message received from other Bluetooth Device
+    if (Serial.available() > 0){ // Check if there is data coming
+      msg = Serial.readString();
+      // Read the message as String
+      vSerial.println("Android Command: " + msg);
+      if(msg == "bluetooth ack"){
+        bluetooth = 0;
+        bluetoothSent = false;
+        wifiSent = false;
+      }
+    }
+    if (bluetoothSent && bluetooth < 5){
+      bluetooth += 1;
+    }
+    if(bluetoothSent && bluetooth == 5){
+      bluetoothSent = false;
+      bluetooth = 0;
+      wifiSent = true;
+    }
+    
   }
+
+  else if(wifiSent){
+    wifiSerial.print("someone is here!");
+    wifiSent = false;
   }
 
 
 
 
   while(digitalRead(capture) == HIGH);
-  delay(1000);
+  delay(800);
 }
