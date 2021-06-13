@@ -21,8 +21,11 @@ void recieveMessageWithBluetooth()
  
      if (Serial.available() > 0) 
      {
-         newData = true;
+        
          data = Serial.readString();
+         if(data != "bluetooth ack"){
+             newData = true;
+         }
 
      }
 }

@@ -1,4 +1,0 @@
-
-    newData = false;
-
-}

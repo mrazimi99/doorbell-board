@@ -38,15 +38,6 @@ void loop() {
     vSerial.println("capture done ...");
     Serial.println("someone is here !" );
     bluetoothSent = true;
-    //delay(4000);
-//    if(Serial.available() > 0){
-//      String newMsg = Serial.readString();
-//      vSerial.println(newMsg); 
-//    }
-    //else{
-      //wifiSerial.print("someone is here!");
-    //}
-     
   }
 
   else if(wifiSent == false && bluetoothSent == true){
@@ -62,6 +53,7 @@ void loop() {
       }
     }
     if (bluetoothSent && bluetooth < 5){
+      vSerial.println("bluetooth not ok");
       bluetooth += 1;
     }
     if(bluetoothSent && bluetooth == 5){
@@ -73,7 +65,8 @@ void loop() {
   }
 
   else if(wifiSent){
-    wifiSerial.print("someone is here!");
+    wifiSerial.print("start");
+    vSerial.println("sent to wifi");
     wifiSent = false;
   }
 
