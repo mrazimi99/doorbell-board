@@ -23,3 +23,17 @@ Camera:
 3 -> compile and upload .ino into arduino
 
 4 -> start simulation and run python script (python serial port is set to com2)
+
+Wifi:
+
+1 -> upload wifi.ino to nodemcu (com3)
+
+2 -> open Virtual Serial Port Driver Pro app and split com3 into com8 and com9 (com8 for sending data from board to nodemcu and com9 for receiving location from nodemcu)
+
+3 -> connect one compim to main arduino with com8 and connect another one to a new board (right-side board in our diagram) with com9
+
+
+* Full Setup Board guidance in boardSetup.txt
+
+Start the simulation and open the android app =)
+
