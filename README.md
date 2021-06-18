@@ -35,5 +35,6 @@ Wifi:
 
 * Full Setup Board guidance in boardSetup.txt
 
-Start the simulation and open the android app =)
+* Server code : https://github.com/mrazimi99/doorbell-server
 
+Start the simulation and open the android app =)
