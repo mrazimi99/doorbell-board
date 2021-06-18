@@ -1,0 +1,7 @@
+setup board:
+1) upload wifi.ino in nodemcu
+2) open Virtual Serial Port Driver Pro and set (com1 <-> com2) and 
+                                               (split com3 -> com8 , com9)
+3) upload arduino.ino and board2_com9.ino in their proper boards
+4) all baudrates = 115200, but comSerial related compim (9600)
+5) start simulation and python script(for camera use)

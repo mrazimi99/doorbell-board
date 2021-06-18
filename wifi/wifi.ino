@@ -24,7 +24,7 @@ bool getLocation = true;
 
 unsigned long timerDelay = 20000;
 unsigned long lastTime = 0;
-//StaticJsonBuffer<200> jsonBuffer;
+
 
 int sendDataToServer(){
    if(WiFi.status()== WL_CONNECTED){
@@ -60,8 +60,6 @@ String getDataFromServer(){
 
    if( (WiFi.status() == WL_CONNECTED)  && ((millis() - lastTime) > timerDelay)){
     lastTime = millis();
-
-    Serial.println("fuck");
    HTTPClient http;   
 
    http.begin(client,"http://103.215.221.170/location");
@@ -72,21 +70,15 @@ String getDataFromServer(){
 
    if(httpResponseCode>0){
     String response = http.getString();
-    Serial.println(response);
+
     StaticJsonBuffer<200> jsonBuffer;
     JsonObject& root = jsonBuffer.parseObject(response);
 
     if(!root.success()) {
-      Serial.println("parseObject() failed");
       return "";
     }
 
-    String x = root["x"];
-    String y = root["y"];
-
-    Serial.print("JSON x = ");
-    Serial.println(x);
-    return x + "\n" + y;
+    return response;
     
    }else{
    }
@@ -137,8 +129,7 @@ void loop() {
     String location = getDataFromServer();
     if(location != ""){
       Serial.println(location);
-    }
-      
+    }  
   }
   
   

@@ -1,7 +1,8 @@
 #include <Process.h>
 #include <SoftwareSerial.h>
 #include <Bridge.h>
-
+#include <Wire.h>
+#include <ArduinoJson.h>
 
 #define capture A0
 
@@ -12,17 +13,23 @@ bool bluetoothSent = false;
 bool wifiSent = false;
 bool getLocation = true;
 
-String x = "";
-String y = "";
+
+String i2cResponse = "";
+double location_x;
+double location_y;
 
 SoftwareSerial vSerial(9, 10);
 SoftwareSerial comSerialSend(12, 11);
 SoftwareSerial wifiSerial(3, 2);
-//SoftwareSerial wifiSerial2(5, 4);
+
 void setup() {
   // Initialization
   pinMode(ledPin, OUTPUT);
   digitalWrite(ledPin, LOW);
+  // i2c
+  Wire.begin(4);                // join i2c bus with address #4
+  Wire.onReceive(receiveEvent);  
+  // i2c
   Serial.begin(9600); // Communication rate of the Bluetooth Module
   while (!Serial) {
     ; // wait for serial port to connect. Needed for Native USB only
@@ -32,49 +39,60 @@ void setup() {
 
   vSerial.begin(115200);
   comSerialSend.begin(9600);
-  //comSerialReceive.begin(9600);
   wifiSerial.begin(115200);
-  //wifiSerial2.begin(115200);
   pinMode(capture, INPUT);
+}
+
+// function that executes whenever data is received from master
+// this function is registered as an event, see setup()
+void receiveEvent(int howMany)
+{
+  i2cResponse = "";
+  while(1 < Wire.available()) // loop through all but the last
+  {
+    char c = Wire.read(); // receive byte as a character
+    i2cResponse += c;
+  }
+  int x = Wire.read();    // receive byte as an integer
+  vSerial.println(i2cResponse);         // print the integer
+  StaticJsonBuffer<200> jsonBuffer;
+  JsonObject& root = jsonBuffer.parseObject(i2cResponse);
+
+  if(!root.success()) {
+    return;
+  }
+
+  location_x = root["x"];
+  location_y = root["y"];
+  vSerial.println(location_x);
+  vSerial.println(location_y);
+  
 }
 
 void loop() {
 
   int isCaptureEn = digitalRead(capture);
-
-
+  
   if(isCaptureEn == HIGH) {
     vSerial.println("start capture ...");
     comSerialSend.println("startcapture");
     vSerial.println("capture done ...");
     Serial.println("someone is here !" );
     bluetoothSent = true;
-    //getLocation = false;
   }
 
-//  if(getLocation == true){
-//    //vSerial.println("ava");
-//    if(wifiSerial2.available() > 0){
-//      vSerial.println("location");
-//      x = wifiSerial2.readString();
-//      vSerial.println("x: " + x);
-//      y = wifiSerial2.readString();
-//      vSerial.println("y: " + y);
-//    }
-//  }
 
   else if(wifiSent == false && bluetoothSent == true){
     // To read message received from other Bluetooth Device
     if (Serial.available() > 0){ // Check if there is data coming
       msg = Serial.readString();
-      // Read the message as String
+ 
       vSerial.println("Android Command: " + msg);
       
       if(msg == "bluetooth ack"){
         bluetooth = 0;
         bluetoothSent = false;
         wifiSent = false;
-        //getLocation = true;
       }
     }
     if (bluetoothSent && bluetooth < 5){
@@ -93,12 +111,10 @@ void loop() {
     wifiSerial.print("start");
     vSerial.println("sent to wifi");
     wifiSent = false;
-    getLocation = true;
   }
   
   while(digitalRead(capture) == HIGH);
-  //if(getLocation == false){
+
   delay(1000);
-  //}
   
 }
