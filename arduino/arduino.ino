@@ -15,8 +15,9 @@ bool getLocation = true;
 
 
 String i2cResponse = "";
-double location_x;
-double location_y;
+//double location_x;
+//double location_y;
+boolean isClose = true;
 
 SoftwareSerial vSerial(9, 10);
 SoftwareSerial comSerialSend(12, 11);
@@ -62,10 +63,10 @@ void receiveEvent(int howMany)
     return;
   }
 
-  location_x = root["x"];
-  location_y = root["y"];
-  vSerial.println(location_x);
-  vSerial.println(location_y);
+  isClose = root["close"];
+
+  vSerial.println(isClose);
+  //vSerial.println(location_y);
   
 }
 

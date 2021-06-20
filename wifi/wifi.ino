@@ -13,8 +13,8 @@
 #include <ArduinoJson.h>
 
 
-const char* ssid = "nasseri";
-const char* password =  "ER8QPPNU";
+const char* ssid = "HUAWEI P10 Plus";
+const char* password =  "hani1234";
 WiFiClient client;
 
 bool wifiSent = false;
