@@ -55,7 +55,7 @@ void receiveEvent(int howMany)
     i2cResponse += c;
   }
   int x = Wire.read();    // receive byte as an integer
-  vSerial.println(i2cResponse);         // print the integer
+  //vSerial.println(i2cResponse);         // print the integer
   StaticJsonBuffer<200> jsonBuffer;
   JsonObject& root = jsonBuffer.parseObject(i2cResponse);
 
@@ -83,7 +83,7 @@ void loop() {
   }
 
 
-  else if(wifiSent == false && bluetoothSent == true){
+  else if(wifiSent == false){
     // To read message received from other Bluetooth Device
     if (Serial.available() > 0){ // Check if there is data coming
       msg = Serial.readString();

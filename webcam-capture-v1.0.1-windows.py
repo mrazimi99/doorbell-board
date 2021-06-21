@@ -3,7 +3,8 @@ from time import sleep
 key = cv2. waitKey(1)
 webcam = cv2.VideoCapture(0)
 sleep(1)
-#while True:
+
+
 
 try:
     check, frame = webcam.read()

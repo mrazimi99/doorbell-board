@@ -2,8 +2,8 @@ import os
 import serial
 import time
 import base64
-arduino = serial.Serial('COM2', 9600, timeout=.1)
-arduino2 = serial.Serial(port='COM7', baudrate=9600, timeout=.1)
+arduino = serial.Serial('COM2', 9600)
+arduino2 = serial.Serial(port='COM7', baudrate=9600)
 #time.sleep(2)
 while True:
     data = arduino.readline() # The last bit gets rid of the new-line chars

@@ -12,9 +12,15 @@
 #include "ESP8266WiFi.h"
 #include <ArduinoJson.h>
 
+#include <ESP8266WebServer.h>
 
-const char* ssid = "HUAWEI P10 Plus";
-const char* password =  "hani1234";
+ESP8266WebServer server(80);
+
+
+
+
+const char* ssid = "nasseri";
+const char* password =  "ER8QPPNU";
 WiFiClient client;
 
 bool wifiSent = false;
@@ -22,15 +28,21 @@ int wifi = 0;
 String wifiMsg = "";
 bool getLocation = true;
 
-unsigned long timerDelay = 20000;
-unsigned long lastTime = 0;
+unsigned long locationTimerDelay = 20000;
+unsigned long locationLastTime = 0;
+
+
+//unsigned long lcdMsgTimerDelay = 20000;
+//unsigned long lcdMsgLastTime = 0;
 
 
 int sendDataToServer(){
    if(WiFi.status()== WL_CONNECTED){
 
-   HTTPClient http;   
+   HTTPClient http;  
 
+    
+   // time
    http.begin(client,"http://103.215.221.170/message?text=someone_arrived!");
    http.addHeader("Content-Type", "text/plain");            
 
@@ -56,12 +68,48 @@ int sendDataToServer(){
 }
 
 
-String getDataFromServer(){
+int sendImageToServer(String message){
+   if(WiFi.status()== WL_CONNECTED){
 
-   if( (WiFi.status() == WL_CONNECTED)  && ((millis() - lastTime) > timerDelay)){
-    lastTime = millis();
    HTTPClient http;   
 
+   // image (body)
+   http.begin(client,"http://103.215.221.170/message?text=" + message);
+   http.addHeader("Content-Type", "text/plain");            
+
+   int httpResponseCode = http.PUT("");   
+
+   if(httpResponseCode>0){
+
+    Serial.println("image sent");
+
+    String response = http.getString(); 
+
+    Serial.println(httpResponseCode);
+
+    if(httpResponseCode == 200){
+      return 200;        
+    }
+
+   }else{
+
+   }
+
+   http.end();
+
+ }else{
+ }
+ return -1;
+}
+
+
+String getDataFromServer(){
+
+   if( (WiFi.status() == WL_CONNECTED)  && ((millis() - locationLastTime) > locationTimerDelay)){
+    locationLastTime = millis();
+   HTTPClient http;   
+
+   // location
    http.begin(client,"http://103.215.221.170/location");
    http.addHeader("Content-Type", "text/plain");            
 
@@ -103,6 +151,14 @@ void setup() {
 
   Serial.println("Connected to the WiFi network");
 
+  Serial.print("IP address: ");
+  Serial.println(WiFi.localIP());  //Print the local IP
+ 
+  server.on("/python", handleBody); //Associate the handler function to the path
+ 
+  server.begin(); //Start the server
+  Serial.println("Server listening");
+
   wifi = 0;
   wifiSent = false;
   wifiMsg = "";
@@ -112,7 +168,25 @@ void setup() {
 }
 
 
+void handleBody() { //Handler for the body path
+ 
+      if (server.hasArg("plain")== false){ //Check if body received
+ 
+            server.send(200, "text/plain", "Body not received");
+            return;
+ 
+      }
+ 
+      String message = server.arg("plain");
+ 
+      server.send(200, "text/plain", message);
+      sendImageToServer(message);
+}
+
+
 void loop() {
+
+  server.handleClient(); //Handling of incoming requests
  
   // wait for WiFi connection
 
