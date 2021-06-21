@@ -2,9 +2,7 @@
 
 /**
    BasicHTTPSClientNofingerprint.ino
-
    1.03.2019
-
 */
 
 
@@ -22,14 +20,18 @@ ESP8266WebServer server(80);
 const char* ssid = "nasseri";
 const char* password =  "ER8QPPNU";
 WiFiClient client;
+HTTPClient http; 
 
 bool wifiSent = false;
 int wifi = 0;
 String wifiMsg = "";
 bool getLocation = true;
 
-unsigned long locationTimerDelay = 20000;
+unsigned long locationTimerDelay = 10000;
 unsigned long locationLastTime = 0;
+
+unsigned long lcdTimerDelay = 3000;
+unsigned long lcdLastTime = 0;
 
 
 //unsigned long lcdMsgTimerDelay = 20000;
@@ -39,7 +41,7 @@ unsigned long locationLastTime = 0;
 int sendDataToServer(){
    if(WiFi.status()== WL_CONNECTED){
 
-   HTTPClient http;  
+   //HTTPClient http;  
 
     
    // time
@@ -71,7 +73,7 @@ int sendDataToServer(){
 int sendImageToServer(String message){
    if(WiFi.status()== WL_CONNECTED){
 
-   HTTPClient http;   
+   //HTTPClient http;   
 
    // image (body)
    http.begin(client,"http://103.215.221.170/message?text=" + message);
@@ -103,11 +105,11 @@ int sendImageToServer(String message){
 }
 
 
-String getDataFromServer(){
+String getLocationFromServer(){
 
    if( (WiFi.status() == WL_CONNECTED)  && ((millis() - locationLastTime) > locationTimerDelay)){
     locationLastTime = millis();
-   HTTPClient http;   
+   //HTTPClient http;   
 
    // location
    http.begin(client,"http://103.215.221.170/location");
@@ -118,6 +120,44 @@ String getDataFromServer(){
 
    if(httpResponseCode>0){
     String response = http.getString();
+
+    StaticJsonBuffer<200> jsonBuffer;
+    JsonObject& root = jsonBuffer.parseObject(response);
+
+    if(!root.success()) {
+      return "";
+    }
+
+    return response;
+    
+   }else{
+   }
+
+   http.end();
+   
+ }else{
+ }
+ return "";
+}
+
+
+String getMsgFromServer(){
+
+   if( (WiFi.status() == WL_CONNECTED)  && ((millis() - lcdLastTime) > lcdTimerDelay)){
+    lcdLastTime = millis();
+     
+
+   // location
+   http.begin(client,"http://103.215.221.170/message");
+   http.addHeader("Content-Type", "text/plain");            
+
+   int httpResponseCode = http.GET();
+
+
+   if(httpResponseCode>0){
+    String response = http.getString();
+
+    Serial.println(response);
 
     StaticJsonBuffer<200> jsonBuffer;
     JsonObject& root = jsonBuffer.parseObject(response);
@@ -190,24 +230,31 @@ void loop() {
  
   // wait for WiFi connection
 
-  if(Serial.available() > 0){
+  /*if(Serial.available() > 0){
     wifiMsg = Serial.readString();
     if(wifiMsg == "start"){
         wifiSent = true;
         wifi = 0;
         getLocation = false;
     }
-  }
+  }*/
 
-  if(getLocation == true){
-    String location = getDataFromServer();
+  //if(getLocation == true){
+    String location = getLocationFromServer();
     if(location != ""){
       Serial.println(location);
     }  
-  }
+  //}
+    delay(1000);
+      String lcd = getMsgFromServer();
+    if(lcd != ""){
+      Serial.println(lcd);
+    }
+
   
   
-  if(wifiSent && wifi < 5){
+  
+  /*if(wifiSent && wifi < 5){
     int result = sendDataToServer();
     if(result == 200){
       wifiSent = false;
@@ -225,9 +272,9 @@ void loop() {
      wifi = 0;
      wifiMsg = "";
      getLocation = true;
-  }
+  }*/
 
-  if(wifiSent){
-    delay(10000);
-  }
+  /*if(wifiSent){
+  delay(1000);
+  }*/
 }
