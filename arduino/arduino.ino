@@ -55,7 +55,7 @@ void receiveEvent(int howMany)
     i2cResponse += c;
   }
   int x = Wire.read();    // receive byte as an integer
-  //vSerial.println(i2cResponse);         // print the integer
+  vSerial.println(i2cResponse);         // print the integer
   StaticJsonBuffer<200> jsonBuffer;
   JsonObject& root = jsonBuffer.parseObject(i2cResponse);
 

@@ -33,7 +33,8 @@ unsigned long locationLastTime = 0;
 unsigned long lcdTimerDelay = 3000;
 unsigned long lcdLastTime = 0;
 
-
+String lcdMsg = "";
+String closeOrFar = "";
 //unsigned long lcdMsgTimerDelay = 20000;
 //unsigned long lcdMsgLastTime = 0;
 
@@ -128,6 +129,13 @@ String getLocationFromServer(){
       return "";
     }
 
+    if(response == closeOrFar){
+      return "";
+    }
+    else{
+      closeOrFar = response;
+    }
+
     return response;
     
    }else{
@@ -157,14 +165,21 @@ String getMsgFromServer(){
    if(httpResponseCode>0){
     String response = http.getString();
 
-    Serial.println(response);
+    if(response == lcdMsg){
+      return "";
+    }
+    else{
+      lcdMsg = response;
+    }
 
-    StaticJsonBuffer<200> jsonBuffer;
+    //Serial.println(response);
+
+    /*StaticJsonBuffer<200> jsonBuffer;
     JsonObject& root = jsonBuffer.parseObject(response);
 
     if(!root.success()) {
       return "";
-    }
+    }*/
 
     return response;
     
