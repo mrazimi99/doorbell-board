@@ -21,12 +21,12 @@ boolean isClose = true;
 
 SoftwareSerial vSerial(9, 10);
 SoftwareSerial comSerialSend(12, 11);
-SoftwareSerial wifiSerial(3, 2);
+//SoftwareSerial wifiSerial(3, 2);
 
 void setup() {
   // Initialization
-  pinMode(ledPin, OUTPUT);
-  digitalWrite(ledPin, LOW);
+  //pinMode(ledPin, OUTPUT);
+  //digitalWrite(ledPin, LOW);
   // i2c
   Wire.begin(4);                // join i2c bus with address #4
   Wire.onReceive(receiveEvent);  
@@ -40,7 +40,7 @@ void setup() {
 
   vSerial.begin(115200);
   comSerialSend.begin(9600);
-  wifiSerial.begin(115200);
+  //wifiSerial.begin(115200);
   pinMode(capture, INPUT);
 }
 
@@ -78,7 +78,7 @@ void loop() {
     vSerial.println("start capture ...");
     comSerialSend.println("startcapture");
     vSerial.println("capture done ...");
-    Serial.println("someone is here !" );
+    //Serial.println("someone is here !" );
     bluetoothSent = true;
   }
 
@@ -88,7 +88,7 @@ void loop() {
     if (Serial.available() > 0){ // Check if there is data coming
       msg = Serial.readString();
  
-      vSerial.println("Android Command: " + msg);
+      vSerial.println("Android Command : " + msg);
       
       if(msg == "bluetooth ack"){
         bluetooth = 0;
@@ -109,13 +109,13 @@ void loop() {
   }
 
   else if(wifiSent){
-    wifiSerial.print("start");
+    //wifiSerial.print("start");
     vSerial.println("sent to wifi");
     wifiSent = false;
   }
   
   while(digitalRead(capture) == HIGH);
 
-  delay(1000);
+  delay(500);
   
 }

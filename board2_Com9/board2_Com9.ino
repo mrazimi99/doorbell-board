@@ -3,14 +3,14 @@
 #include <Wire.h>
 #include <ArduinoJson.h>
 
-SoftwareSerial wifiLCD(12, 11);
+//SoftwareSerial wifiLCD(12, 11);
 String data = "";
-byte x = 0;
+//byte x = 0;
 
 void setup() {
   Wire.begin(8);
   Serial.begin(115200); // Communication rate of the Bluetooth Module
-  wifiLCD.begin(115200);
+  //wifiLCD.begin(115200);
 }
 
 void loop() {
@@ -32,7 +32,7 @@ void loop() {
       Wire.endTransmission();    // stop transmitting
     }
 
-    x++;
+    //x++;
     
   }
 

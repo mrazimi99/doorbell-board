@@ -39,36 +39,36 @@ String closeOrFar = "";
 //unsigned long lcdMsgLastTime = 0;
 
 
-int sendDataToServer(){
-   if(WiFi.status()== WL_CONNECTED){
-
-   //HTTPClient http;  
-
-    
-   // time
-   http.begin(client,"http://103.215.221.170/message?text=someone_arrived!");
-   http.addHeader("Content-Type", "text/plain");            
-
-   int httpResponseCode = http.PUT("");   
-
-   if(httpResponseCode>0){
-
-    String response = http.getString();            
-
-    if(httpResponseCode == 200){
-      return 200;        
-    }
-
-   }else{
-
-   }
-
-   http.end();
-
- }else{
- }
- return -1;
-}
+//int sendDataToServer(){
+//   if(WiFi.status()== WL_CONNECTED){
+//
+//   //HTTPClient http;  
+//
+//    
+//   // time
+//   http.begin(client,"http://103.215.221.170/message?text=someone_arrived!");
+//   http.addHeader("Content-Type", "text/plain");            
+//
+//   int httpResponseCode = http.PUT("");   
+//
+//   if(httpResponseCode>0){
+//
+//    String response = http.getString();            
+//
+//    if(httpResponseCode == 200){
+//      return 200;        
+//    }
+//
+//   }else{
+//
+//   }
+//
+//   http.end();
+//
+// }else{
+// }
+// return -1;
+//}
 
 
 int sendImageToServer(String message){
@@ -77,18 +77,19 @@ int sendImageToServer(String message){
    //HTTPClient http;   
 
    // image (body)
-   http.begin(client,"http://103.215.221.170/message?text=" + message);
+   //http.begin(client,"http://103.215.221.170/message?text=" + message);
+   http.begin(client,"http://103.215.221.170/bmage");
    http.addHeader("Content-Type", "text/plain");            
 
-   int httpResponseCode = http.PUT("");   
+   int httpResponseCode = http.PUT(message);   
 
    if(httpResponseCode>0){
 
-    Serial.println("image sent");
+    //Serial.println("image sent");
 
     String response = http.getString(); 
 
-    Serial.println(httpResponseCode);
+    //Serial.println(httpResponseCode);
 
     if(httpResponseCode == 200){
       return 200;        
