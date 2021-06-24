@@ -18,19 +18,19 @@ char receivedMsg[16];
 String data;
 
 
-void recieveMessageWithBluetooth()
-{
+// void recieveMessageWithBluetooth()
+// {
  
-     if (Serial.available() > 0) 
-     {
+//      if (Serial.available() > 0) 
+//      {
         
-         data = Serial.readString();
-         if(data.indexOf("bluetooth ack") != 0){
-             newData = true;
-         }
+//          data = Serial.readString();
+//          if(data.indexOf("bluetooth ack") != 0){
+//              newData = true;
+//          }
 
-     }
-}
+//      }
+// }
 
 // function that executes whenever data is received from master
 // this function is registered as an event, see setup()
@@ -42,7 +42,8 @@ void receiveEvent(int howMany)
     char c = Wire.read(); // receive byte as a character
     data += c;
   }
-  int x = Wire.read();    // receive byte as an integer
+  char x = Wire.read();    // receive byte as an integer
+  data += x;
   newData = true;
 }
 
@@ -65,7 +66,7 @@ void setup() {
 
 void loop() {
 
-    recieveMessageWithBluetooth();
+    //recieveMessageWithBluetooth();
 
 
     if (newData)   { 

@@ -17,8 +17,8 @@ ESP8266WebServer server(80);
 
 
 
-const char* ssid = "HUAWEI Y7 Prime";
-const char* password =  "135013501350";
+const char* ssid = "HUAWEI P10 Plus";
+const char* password =  "hani1234";
 WiFiClient client;
 HTTPClient http; 
 

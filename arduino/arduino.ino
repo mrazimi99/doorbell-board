@@ -21,7 +21,7 @@ boolean isClose = true;
 
 SoftwareSerial vSerial(9, 10);
 SoftwareSerial comSerialSend(12, 11);
-//SoftwareSerial wifiSerial(3, 2);
+SoftwareSerial wifiSerial(3, 2);
 
 void setup() {
   // Initialization
@@ -40,7 +40,7 @@ void setup() {
 
   vSerial.begin(115200);
   comSerialSend.begin(9600);
-  //wifiSerial.begin(115200);
+  wifiSerial.begin(115200);
   pinMode(capture, INPUT);
 }
 
@@ -94,6 +94,12 @@ void loop() {
         bluetooth = 0;
         bluetoothSent = false;
         wifiSent = false;
+      }
+
+      else{
+        Wire.beginTransmission(12); // transmit to device #4
+        Wire.write(msg.c_str());        // sends five bytes
+        Wire.endTransmission();    // stop transmitting
       }
     }
     if (bluetoothSent && bluetooth < 5){

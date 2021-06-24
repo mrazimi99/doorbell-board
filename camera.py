@@ -9,7 +9,7 @@ import requests
 imageLength = 1024
 
 arduino = serial.Serial('COM2', 9600)
-#arduino2 = serial.Serial(port='COM7', baudrate=9600)
+arduino2 = serial.Serial(port='COM7', baudrate=9600)
 #time.sleep(2)
 
 def sendPartialImage(partialImage):
@@ -21,12 +21,14 @@ def sendImage():
     with open("saved_img-final.jpg", "rb") as img_file:
         my_string = str(base64.b64encode(img_file.read()))
         temp = my_string
-        sendPartialImage("start")
+        print("writing")
+        arduino2.write(temp.encode())
+        '''sendPartialImage("start")
         while(len(temp) > imageLength):
             sendPartialImage(temp[:imageLength])
             temp = temp[imageLength:]
         sendPartialImage(temp)
-        sendPartialImage("end")
+        sendPartialImage("end")'''
         
 def captureImage():
     try:
