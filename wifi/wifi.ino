@@ -17,8 +17,8 @@ ESP8266WebServer server(80);
 
 
 
-const char* ssid = "nasseri";
-const char* password =  "ER8QPPNU";
+const char* ssid = "HUAWEI Y7 Prime";
+const char* password =  "135013501350";
 WiFiClient client;
 HTTPClient http; 
 
@@ -89,7 +89,7 @@ int sendImageToServer(String message){
 
     String response = http.getString(); 
 
-    //Serial.println(httpResponseCode);
+    Serial.println(httpResponseCode);
 
     if(httpResponseCode == 200){
       return 200;        

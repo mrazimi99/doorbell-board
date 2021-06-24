@@ -3,7 +3,6 @@
 #include <AltSoftSerial.h>
 #include <LiquidCrystal.h>
 #include <Wire.h>
-#include <string.h>
 
 
 
@@ -26,7 +25,7 @@ void recieveMessageWithBluetooth()
      {
         
          data = Serial.readString();
-         if(data.indexOf("bluetooth ack") != -1){
+         if(data.indexOf("bluetooth ack") != 0){
              newData = true;
          }
 
