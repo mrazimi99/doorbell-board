@@ -17,8 +17,8 @@ ESP8266WebServer server(80);
 
 
 
-const char* ssid = "HUAWEI P10 Plus";
-const char* password =  "hani1234";
+const char* ssid = "nasseri";
+const char* password =  "ER8QPPNU";
 WiFiClient client;
 HTTPClient http; 
 
@@ -89,7 +89,7 @@ int sendImageToServer(String message){
 
     String response = http.getString(); 
 
-    Serial.println(httpResponseCode);
+    //Serial.println(httpResponseCode);
 
     if(httpResponseCode == 200){
       return 200;        
@@ -220,6 +220,8 @@ void setup() {
   wifiMsg = "";
 
   getLocation = true;
+
+  delay(15000);
 
 }
 

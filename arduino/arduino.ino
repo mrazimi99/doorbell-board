@@ -40,7 +40,7 @@ void setup() {
 
   vSerial.begin(115200);
   comSerialSend.begin(9600);
-  wifiSerial.begin(115200);
+  //wifiSerial.begin(115200);
   pinMode(capture, INPUT);
 }
 
@@ -78,8 +78,17 @@ void loop() {
     vSerial.println("start capture ...");
     comSerialSend.println("startcapture");
     vSerial.println("capture done ...");
-    //Serial.println("someone is here !" );
-    bluetoothSent = true;
+    if(isClose == true){
+      Serial.println("BlueTooth : Someone Arrived ! " );
+      bluetoothSent = true;
+      wifiSent = false;
+      vSerial.println("sent with bluetooth");
+    }
+    else{
+      wifiSent = true;
+      bluetoothSent = false;
+      bluetooth = 0;
+    }
   }
 
 
@@ -116,7 +125,8 @@ void loop() {
 
   else if(wifiSent){
     //wifiSerial.print("start");
-    vSerial.println("sent to wifi");
+    comSerialSend.println("sendImage");
+    vSerial.println("sent with wifi");
     wifiSent = false;
   }
   

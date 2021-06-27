@@ -3,9 +3,9 @@ from time import sleep
 key = cv2. waitKey(1)
 webcam = cv2.VideoCapture(0)
 sleep(1)
-imageLength = 1024
+#imageLength = 1024
 
-def sendPartialImage(partialImage):
+'''def sendPartialImage(partialImage):
     print(len(partialImage))
     requests.put(url='http://192.168.1.5/python',data=partialImage,headers={'Content-Type': 'text/plain'})
 
@@ -19,7 +19,7 @@ def sendImage():
             sendPartialImage(temp[:imageLength])
             temp = temp[imageLength:]
         sendPartialImage(temp)
-        sendPartialImage("end")
+        sendPartialImage("end")'''
 
 
 try:
@@ -39,8 +39,6 @@ try:
     print("Resized...")
     img_resized = cv2.imwrite(filename='saved_img-final.jpg', img=img_)
     print("Image saved!")
-    sendImage()
-    print("Image sent to nodemcu!")
             
 
     

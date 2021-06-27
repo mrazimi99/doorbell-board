@@ -22,13 +22,13 @@ def sendImage():
         my_string = str(base64.b64encode(img_file.read()))
         temp = my_string
         print("writing")
-        arduino2.write(temp.encode())
-        '''sendPartialImage("start")
+        #arduino2.write(temp.encode())
+        sendPartialImage("start")
         while(len(temp) > imageLength):
             sendPartialImage(temp[:imageLength])
             temp = temp[imageLength:]
         sendPartialImage(temp)
-        sendPartialImage("end")'''
+        sendPartialImage("end")
         
 def captureImage():
     try:
@@ -52,8 +52,7 @@ def captureImage():
         print("Resized...")
         img_resized = cv2.imwrite(filename='saved_img-final.jpg', img=img_)
         print("Image saved!")
-        sendImage()
-        print("Image sent to nodemcu!")
+
             
 
     
@@ -71,12 +70,16 @@ while True:
         strdata = str(data.decode("utf-8")[:-2])
         if strdata == "startcapture":  
             print("starting to capture ... ")
-            #os.system('python webcam-capture-v1.0.1-windows.py')
-            captureImage()
+            os.system('python webcam-capture-v1.0.1-windows.py')
+            #captureImage()
 
             '''with open("saved_img-final.jpg", "rb") as imageFile:
                 content = imageFile.read()
                 arduino2.write(content)'''
             print("capture done ... ")
+
+        elif strdata == "sendImage":
+            sendImage()
+            print("Image sent to nodemcu!")
 
 
