@@ -29,6 +29,11 @@ def sendImage():
             temp = temp[imageLength:]
         sendPartialImage(temp)
         sendPartialImage("end")
+
+def sendImageBluetooth():
+    with open("saved_img-final.jpg", "rb") as img_file:
+        my_string = str(base64.b64encode(img_file.read()))
+        arduino2.write(bytes(my_string[0:128], 'utf-8'))
         
 def captureImage():
     try:
@@ -78,8 +83,12 @@ while True:
                 arduino2.write(content)'''
             print("capture done ... ")
 
-        elif strdata == "sendImage":
+        elif strdata == "sendImageWifi":
             sendImage()
             print("Image sent to nodemcu!")
+        elif strdata == "sendImageBluetooth":
+            print("bluetooth image ! ")
+            sendImageBluetooth()
+            print("Image sent bluetooth!")
 
 

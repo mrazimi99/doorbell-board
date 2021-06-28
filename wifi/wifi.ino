@@ -221,7 +221,7 @@ void setup() {
 
   getLocation = true;
 
-  delay(15000);
+  delay(5000);
 
 }
 

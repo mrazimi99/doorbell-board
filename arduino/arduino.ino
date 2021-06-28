@@ -21,7 +21,7 @@ boolean isClose = true;
 
 SoftwareSerial vSerial(9, 10);
 SoftwareSerial comSerialSend(12, 11);
-SoftwareSerial wifiSerial(3, 2);
+//SoftwareSerial wifiSerial(3, 2);
 
 void setup() {
   // Initialization
@@ -40,7 +40,7 @@ void setup() {
 
   vSerial.begin(115200);
   comSerialSend.begin(9600);
-  //wifiSerial.begin(115200);
+  //wifiSerial.begin(9600);
   pinMode(capture, INPUT);
 }
 
@@ -72,6 +72,11 @@ void receiveEvent(int howMany)
 
 void loop() {
 
+//  if(wifiSerial.available() > 0){
+//    String img = wifiSerial.readString();
+//    vSerial.println(img);
+//  }
+
   int isCaptureEn = digitalRead(capture);
   
   if(isCaptureEn == HIGH) {
@@ -80,14 +85,17 @@ void loop() {
     vSerial.println("capture done ...");
     if(isClose == true){
       Serial.println("BlueTooth : Someone Arrived ! " );
+      //comSerialSend.println("sendImageBluetooth");
       bluetoothSent = true;
       wifiSent = false;
       vSerial.println("sent with bluetooth");
     }
     else{
-      wifiSent = true;
+      comSerialSend.println("sendImageWifi");
+      wifiSent = false;
       bluetoothSent = false;
       bluetooth = 0;
+      vSerial.println("sent with wifi");
     }
   }
 
@@ -125,9 +133,9 @@ void loop() {
 
   else if(wifiSent){
     //wifiSerial.print("start");
-    comSerialSend.println("sendImage");
-    vSerial.println("sent with wifi");
+    comSerialSend.println("sendImageWifi");
     wifiSent = false;
+    vSerial.println("sent with wifi");
   }
   
   while(digitalRead(capture) == HIGH);
