@@ -13,6 +13,9 @@ bool bluetoothSent = false;
 bool wifiSent = false;
 bool getLocation = true;
 
+bool gettingImage = false;
+//bool firstImgPart = false;
+
 
 String i2cResponse = "";
 //double location_x;
@@ -24,9 +27,6 @@ SoftwareSerial lcd(10, 9);
 //SoftwareSerial comSerialSend(12, 11);
 
 void setup() {
-  // Initialization
-  //pinMode(ledPin, OUTPUT);
-  //digitalWrite(ledPin, LOW);
   // i2c
 //  Wire.begin(4);                // join i2c bus with address #4
 //  Wire.onReceive(receiveEvent);  
@@ -34,6 +34,8 @@ void setup() {
 
   //blue
   Serial.begin(9600); // Communication rate of the Bluetooth Module
+
+  // lcd communication
   lcd.begin(115200);
 
   // vSerial
@@ -48,6 +50,7 @@ void setup() {
   // pythonRecv
   Serial3.begin(9600);
   Serial3.setTimeout(1);
+  
   while (!Serial) {
     ; // wait for serial port to connect. Needed for Native USB only
   }
@@ -55,35 +58,9 @@ void setup() {
   msg = "";
   pic = "";
 
-//  vSerial.begin(115200);
-//  comSerialSend.begin(9600);
   pinMode(capture, INPUT);
 }
 
-// function that executes whenever data is received from master
-// this function is registered as an event, see setup()
-//void receiveEvent(int howMany)
-//{
-//  i2cResponse = "";
-//  while(1 < Wire.available()) // loop through all but the last
-//  {
-//    char c = Wire.read(); // receive byte as a character
-//    i2cResponse += c;
-//  }
-//  int x = Wire.read();    // receive byte as an integer
-//  vSerial.println(i2cResponse);         // print the integer
-//  StaticJsonBuffer<200> jsonBuffer;
-//  JsonObject& root = jsonBuffer.parseObject(i2cResponse);
-//
-//  if(!root.success()) {
-//    return;
-//  }
-//
-//  isClose = root["close"];
-//
-//  vSerial.println(isClose);
-//  
-//}
 
 void loop() {
 
@@ -96,9 +73,6 @@ void loop() {
 
     if(!root.success()) {
       vSerial.println(data);
-//      Wire.beginTransmission(12); // transmit to device #4
-//      Wire.write(data.c_str());        // sends five bytes
-//      Wire.endTransmission();    // stop transmitting
       lcd.println(data);
        
     }
@@ -106,86 +80,101 @@ void loop() {
       isClose = root["close"];
       vSerial.println(isClose);
     }
-
-    //x++;
     
   }
 
-  // get image from python
-  if(bluetoothSent == true && Serial3.available() > 0){
-    vSerial.println("image here ! ");
+  // GET image from python
+  if(Serial3.available() > 0 ){
+    vSerial.println("image part here ! ");
     pic = Serial3.readString();
     Serial.println(pic);
-    Serial2.println("ackBluetooth");
     vSerial.println(pic);
   }
   
   int isCaptureEn = digitalRead(capture);
   
-  if(isCaptureEn == HIGH) {
+  if(isCaptureEn == HIGH && gettingImage == false && bluetoothSent == false) {
     vSerial.println("start capture ...");
     Serial2.println("startcapture");
     vSerial.println("capture done ...");
     if(isClose == true){
       //Serial.println("BlueTooth : Someone Arrived ! " );
       bluetoothSent = true;
-      Serial2.println("sendImageBluetooth");
       wifiSent = false;
-      vSerial.println("sent with bluetooth");
+      gettingImage = false;
+      bluetooth = 0;
+      Serial2.println("sendImageBluetooth");
+      vSerial.println("start sending image with bluetooth ... ");
     }
     else{
-      Serial2.println("sendImageWifi");
       wifiSent = false;
       bluetoothSent = false;
       bluetooth = 0;
+      gettingImage = false;
+      Serial2.println("sendImageWifi");
       vSerial.println("sent with wifi");
     }
   }
 
 
-  else if(wifiSent == false){
+  
     // To read message received from other Bluetooth Device
     if (Serial.available() > 0){ // Check if there is data coming
       msg = Serial.readString();
  
       vSerial.println("Android Command : " + msg);
       
-      if(msg == "bluetooth ack"){
+      if(msg == "start ack" && bluetoothSent == true){
+        bluetooth = 0;
+        //bluetoothSent = false;
+        wifiSent = false;
+        gettingImage = true;
+        vSerial.println("starttttttt");
+      }
+
+      if(msg == "success" && gettingImage == true){
         bluetooth = 0;
         bluetoothSent = false;
         wifiSent = false;
+        gettingImage = false;
+        vSerial.println("doroooooost");
+      }
+
+      if(msg == "unsuccess" && gettingImage == true){
+        bluetooth = 0;
+        bluetoothSent = false;
+        wifiSent = false;
+        gettingImage = false;
+        Serial2.println("sendImageWifi");
+        vSerial.println("qalaaaaaat");
       }
 
       else{
-//        Wire.beginTransmission(12); // transmit to device #4
-//        Wire.write(msg.c_str());        // sends five bytes
-//        Wire.endTransmission();    // stop transmitting
         lcd.println(msg);
       }
     }
-    if (bluetoothSent && bluetooth < 8){
+    if (bluetoothSent == true && gettingImage == false && bluetooth < 10){
       vSerial.println("bluetooth not ok");
       bluetooth += 1;
     }
-    if(bluetoothSent && bluetooth == 8){
+    if(bluetoothSent == true && gettingImage == false && bluetooth == 10){
       bluetoothSent = false;
       bluetooth = 0;
-      wifiSent = true;
+      wifiSent = false;
+      gettingImage = false;
+      Serial2.println("sendImageWifi");
+      vSerial.println("bluetooth failed ! now wifi !");
     }
     
-  }
 
-  else if(wifiSent){
-    Serial2.println("sendImageWifi");
-    wifiSent = false;
-    vSerial.println("sent with wifi");
-  }
+//  else if(wifiSent){
+//    wifiSent = false;
+//    vSerial.println("sent with wifi");
+//  }
   
   while(digitalRead(capture) == HIGH);
 
-//  if(bluetoothSent == true){
-//    delay(1500);
-//  }
+
    delay(500);
   
 }

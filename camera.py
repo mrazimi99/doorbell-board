@@ -39,22 +39,22 @@ def sendImageBluetooth():
         arduino2.write(bytes("start", "utf-8"))
         '''while ("ackBluetooth" not in str(arduino.readline().decode("utf-8")[:-2])):
             pass'''
-        sleep(1)
+        sleep(10)
         #bluetoothAck = False
         temp = my_string
-        while(len(temp) > 62):
+        while(len(temp) > 55):
             print("62")
-            arduino2.write(bytes(temp[:62], "utf-8"))
-            temp = temp[62:]
+            arduino2.write(bytes(temp[:55], "utf-8"))
+            temp = temp[55:]
             '''while ("ackBluetooth" not in str(arduino.readline().decode("utf-8")[:-2])):
                 pass'''
-            sleep(1)
+            sleep(5)
             #bluetoothAck = False
 
         arduino2.write(bytes(temp, "utf-8"))
         '''while ("ackBluetooth" not in str(arduino.readline().decode("utf-8")[:-2])):
             pass'''
-        sleep(1)
+        sleep(10)
         print(len(temp))
         #bluetoothAck = False
         arduino2.write(bytes("end", "utf-8"))
