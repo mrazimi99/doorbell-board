@@ -9,9 +9,10 @@ import requests
 imageLength = 1024
 
 arduino = serial.Serial('COM2', 9600)
-arduino2 = serial.Serial(port='COM7', baudrate=9600)
+arduino2 = serial.Serial(port='COM7', baudrate=9600, timeout=.1)
 #time.sleep(2)
 
+bluetoothAck = False
 def sendPartialImage(partialImage):
     print(len(partialImage))
     requests.put(url='http://192.168.1.5/python',data=partialImage,headers={'Content-Type': 'text/plain'})
@@ -33,7 +34,31 @@ def sendImage():
 def sendImageBluetooth():
     with open("saved_img-final.jpg", "rb") as img_file:
         my_string = str(base64.b64encode(img_file.read()))
-        arduino2.write(bytes(my_string[0:128], 'utf-8'))
+        #myString = "hello"
+        print(my_string)
+        arduino2.write(bytes("start", "utf-8"))
+        '''while ("ackBluetooth" not in str(arduino.readline().decode("utf-8")[:-2])):
+            pass'''
+        sleep(1)
+        #bluetoothAck = False
+        temp = my_string
+        while(len(temp) > 62):
+            print("62")
+            arduino2.write(bytes(temp[:62], "utf-8"))
+            temp = temp[62:]
+            '''while ("ackBluetooth" not in str(arduino.readline().decode("utf-8")[:-2])):
+                pass'''
+            sleep(1)
+            #bluetoothAck = False
+
+        arduino2.write(bytes(temp, "utf-8"))
+        '''while ("ackBluetooth" not in str(arduino.readline().decode("utf-8")[:-2])):
+            pass'''
+        sleep(1)
+        print(len(temp))
+        #bluetoothAck = False
+        arduino2.write(bytes("end", "utf-8"))
+        
         
 def captureImage():
     try:
@@ -87,8 +112,12 @@ while True:
             sendImage()
             print("Image sent to nodemcu!")
         elif strdata == "sendImageBluetooth":
-            print("bluetooth image ! ")
+            #print("bluetooth image ! ")
+            #bluetoothAck = False
             sendImageBluetooth()
             print("Image sent bluetooth!")
+        '''elif strdata == "ackBluetooth":
+            print("ackBluetooth received ! ")
+            bluetoothAck = True'''
 
 

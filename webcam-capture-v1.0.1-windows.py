@@ -35,7 +35,7 @@ try:
     gray = cv2.cvtColor(img_, cv2.COLOR_BGR2GRAY)
     print("Converted RGB image to grayscale...")
     print("Resizing image to 225x225 scale...")
-    img_ = cv2.resize(gray,(225,225))
+    img_ = cv2.resize(gray,(150,150))
     print("Resized...")
     img_resized = cv2.imwrite(filename='saved_img-final.jpg', img=img_)
     print("Image saved!")
