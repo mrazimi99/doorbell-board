@@ -130,6 +130,7 @@ void loop() {
         wifiSent = false;
         gettingImage = true;
         vSerial.println("starttttttt");
+        Serial2.println("continueBluetooth");
       }
 
       if(msg == "success" && gettingImage == true){
@@ -166,11 +167,6 @@ void loop() {
       vSerial.println("bluetooth failed ! now wifi !");
     }
     
-
-//  else if(wifiSent){
-//    wifiSent = false;
-//    vSerial.println("sent with wifi");
-//  }
   
   while(digitalRead(capture) == HIGH);
 

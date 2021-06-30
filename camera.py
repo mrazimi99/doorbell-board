@@ -36,7 +36,7 @@ def sendImageBluetooth():
         my_string = str(base64.b64encode(img_file.read()))
         #myString = "hello"
         print(my_string)
-        arduino2.write(bytes("start", "utf-8"))
+        #arduino2.write(bytes("start", "utf-8"))
         '''while ("ackBluetooth" not in str(arduino.readline().decode("utf-8")[:-2])):
             pass'''
         sleep(10)
@@ -114,10 +114,12 @@ while True:
         elif strdata == "sendImageBluetooth":
             #print("bluetooth image ! ")
             #bluetoothAck = False
+            #sendImageBluetooth()
+            arduino2.write(bytes("start", "utf-8"))
+            #print("Image sent bluetooth!")
+        elif strdata == "continueBluetooth":
             sendImageBluetooth()
-            print("Image sent bluetooth!")
-        '''elif strdata == "ackBluetooth":
-            print("ackBluetooth received ! ")
-            bluetoothAck = True'''
+            #print("ackBluetooth received ! ")
+            #bluetoothAck = True
 
 
